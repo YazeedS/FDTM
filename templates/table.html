@@ -1,0 +1,52 @@
+{% extends "raw_data.html" %}
+{% block body %}
+
+<link href="https://fonts.googleapis.com/css?family=Muli&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+<style>
+  h3{
+    font-family: 'Muli', sans-serif;
+    color: black;
+    text-align: left;
+}
+</style>
+<body>
+  {% for table in tables %}
+            {{titles[loop.index]}}
+            {{ table|safe }}
+{% endfor %}
+<hr class="my-4">
+
+<h3 id="h3">Mean: = <b>{{mean}}</b></h3>
+
+<h3>Median: = <b>{{median}}</b></h3>
+
+<h3>Mode: = <b>{{mode}}</b></h3>
+
+<h3>Variance: = <b>{{variance}}</b></h3>
+
+<h3>Standerd Deveitation: = <b>{{standerd_deviation}}</b></h3>
+
+<h3>Range: = <b>{{Range}}</b></h3>
+
+<h3>Coeffecient of Variation: = <b>{{cv}}%</b></h3>
+<hr class="my-4">
+
+<div class="container">
+  <div class="row">
+        <div class="col-xl-6 boxy col-lg-12">{{histogram}}</div>
+        <div class="col-xl-6 boxy col-lg-12">{{polygon}}</div>
+      </div>
+      <hr class="my-4">
+
+        <div class="row">
+
+        <div class="col-xl-6 boxy col-md-12">{{acfp}}</div>
+        <div class="col-xl-6 boxy col-md-12">{{dcfp}}</div>
+</div>
+</div>
+
+</body>
+
+{% endblock %}

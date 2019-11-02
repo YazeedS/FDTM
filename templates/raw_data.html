@@ -1,0 +1,22 @@
+{% extends "index.html" %}
+{% block body %}
+
+<body>
+  <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
+
+<div class="input-group">
+  <div class="input-group-prepend">
+    <span class="input-group-text">Raw Data</span>
+  </div>
+  <textarea name="data" class="form-control" aria-label="With textarea"></textarea>
+
+  <button type="submit" class="btn btn-primary btn-lg btn-block">Construct The Table</button>
+</div>
+  </form>
+<br>
+<hr class="my-4">
+
+</body>
+
+
+{% endblock %}

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Frequency Distribution Table Maker</title>
+    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+   </head>
+
+   <style>
+
+   .jumbotron {
+     margin: 50px 25px 0px 25px;
+     padding-bottom: 100px;
+   }
+   body{
+     background-image: url('https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg')
+   }
+   </style>
+
+  <body background=url("https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg")>
+    <div class="container">
+
+    <div class="jumbotron">
+      <h1 class="display-4">Frequency Distribution Table Maker</h1>
+      <hr class="my-4">
+
+      <p class="lead">Choose a way to upload your data.</p>
+
+      <div class="btn-group" role="group" aria-label="Basic example">
+        <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.location.href='{{ url_for('raw_data')}}';">Raw Data</button>
+        <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.location.href='{{ url_for('cb_freq')}}';">Class Boundries & Frequency</button>
+      </div>
+
+      <hr class="my-4">
+      {% block body %}
+
+    </div>
+    {% endblock %}
+  </div>
+  </body>
+</html>

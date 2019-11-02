@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block body %}
+
+<body>
+  <form action="{{url_for('organize_cbfreq')}}" method="post" enctype="multipart/form-data">
+
+  <label for="k">How Many Classes(k)?</label>
+  <input type="number" name="k" value="k" required>
+
+  <button type="submit" class="btn btn-primary">Next</button>
+</form>
+</body>
+
+
+{% endblock %}
