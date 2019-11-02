@@ -10,16 +10,17 @@
    <style>
 
    .jumbotron {
-     margin: 50px 25px 0px 25px;
+     margin: 50px 20px 0px 20px;
      padding-bottom: 100px;
+     align: center;
    }
    body{
      background-image: url('https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg')
    }
    </style>
 
-  <body background=url("https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg")>
-    <div class="container">
+  <body>
+    <div class="container" align="center">
 
     <div class="jumbotron">
       <h1 class="display-4">Frequency Distribution Table Maker</h1>
@@ -35,8 +36,9 @@
       <hr class="my-4">
       {% block body %}
 
-    </div>
+
     {% endblock %}
+    </div>
   </div>
   </body>
 </html>
