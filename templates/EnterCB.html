@@ -2,7 +2,7 @@
 {% block body %}
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
 
@@ -13,11 +13,12 @@ td {
 
 </style>
 <body>
-<div class="container">
+<div class="container" align="center">
 
 <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
+<div class="container">
 
-<table class="table">
+<table class="table table-striped table-dark" justify="center">
   <thead>
     <tr>
       <th scope="col">#</th>
@@ -28,19 +29,19 @@ td {
     </thead>
     <tbody>
 {%for i in range(k)%}
-
 <tr>
   <th scope="row">{{i+1}}</th>
-
       {{ htmls[i][0] }}
       {{ htmls[i][1] }}
       {{ htmls[i][2] }}
     </tr>
-    <br>
 {%endfor%}
+<br>
+
 </tbody>
 
 </table>
+<hr class="my-4">
 
 <button type="submit" class="btn btn-primary btn-lg btn-block">Construct The Table</button>
 </form>

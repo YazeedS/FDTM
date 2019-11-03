@@ -32,9 +32,9 @@ def organize_cbfreq():
         # for loop with k to get all the variables inside
         htmls=[]
         for x in range(int(k)):
-            row=[HTML(f'<td><input type="text" name="lowerBoundry{x}" placeholder="Lower Boundry"></td>'),
-            HTML(f'<td><input type="text" name="higherBoundry{x}" placeholder="Higehr Boundry"></td>'),
-            HTML(f'<td><input type="text" name="frequency{x}" placeholder="Frequency"></td>')]
+            row=[HTML(f'<td><input type="number" name="lowerBoundry{x}" placeholder="Lower Boundry" required></td>'),
+            HTML(f'<td><input type="number" name="higherBoundry{x}" placeholder="Higehr Boundry" required></td>'),
+            HTML(f'<td><input type="number" name="frequency{x}" placeholder="Frequency" required></td>')]
 
             htmls.append(row)
 
@@ -132,7 +132,7 @@ def construct_table():
 
             acf = 0
             dcf = n
-            c= float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+            c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
 
 
             #Adding data to the table
