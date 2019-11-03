@@ -13,7 +13,6 @@
 </style>
 <body>
   {% for table in tables %}
-            {{titles[loop.index]}}
             {{ table|safe }}
 {% endfor %}
 <hr class="my-4">

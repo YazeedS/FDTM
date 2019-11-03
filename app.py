@@ -350,7 +350,7 @@ def construct_table():
             dcfp = '<img src="data:image/png;base64, {}" , height="400" width="400" align="center">'.format(encoded.decode('utf-8'))
 
 
-            return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped', justify='center',index=False))],
+            return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False))],
              titles=df.columns.values,
             mean = round(mean,2) , median = round(median,2), mode=mode,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),
