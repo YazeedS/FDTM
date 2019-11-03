@@ -17,6 +17,9 @@ td {
 
 <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
 
+  <div class="alert alert-danger" role="alert">
+    This Method Does Not Work Yet!
+  </div>
 <table class="table">
   <thead>
     <tr>
@@ -40,7 +43,7 @@ td {
 
 </table>
 
-<button type="submit" class="btn btn-primary btn-lg btn-block">Construct The Table</button>
+<button type="submit" class="btn btn-primary btn-lg btn-block" disabled>Construct The Table</button>
 
 </form>
 </div>
