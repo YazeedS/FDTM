@@ -17,9 +17,6 @@ td {
 
 <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
 
-  <div class="alert alert-danger" role="alert">
-    This Method Does Not Work Yet!
-  </div>
 <table class="table">
   <thead>
     <tr>
@@ -31,11 +28,13 @@ td {
     </thead>
     <tbody>
 {%for i in range(k)%}
+
 <tr>
   <th scope="row">{{i+1}}</th>
-    <td><input type="text" name="lowerBoundry{{i}}" placeholder="Lower Boundry"></td>
-    <td><input type="text" name="higherBoundry{{i}}" placeholder="Higher Boundry"></td>
-    <td><input type="number" name="frequency{{i}}" placeholder="Frequecny"></td>
+
+      {{ htmls[i][0] }}
+      {{ htmls[i][1] }}
+      {{ htmls[i][2] }}
     </tr>
     <br>
 {%endfor%}
@@ -43,8 +42,7 @@ td {
 
 </table>
 
-<button type="submit" class="btn btn-primary btn-lg btn-block" disabled>Construct The Table</button>
-
+<button type="submit" class="btn btn-primary btn-lg btn-block">Construct The Table</button>
 </form>
 </div>
 

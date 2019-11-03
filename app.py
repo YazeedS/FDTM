@@ -16,7 +16,6 @@ app=Flask(__name__)
 def index():
     return render_template("index.html")
 
-
 @app.route("/raw")
 def raw_data():
     return render_template("raw_data.html")
@@ -28,10 +27,19 @@ def cb_freq():
 @app.route("/oraganizing", methods=["post"])
 def organize_cbfreq():
     if request.method == "POST":
+
         k = request.form["k"]
+        # for loop with k to get all the variables inside
+        htmls=[]
+        for x in range(int(k)):
+            row=[HTML(f'<td><input type="text" name="lowerBoundry{x}" placeholder="Lower Boundry"></td>'),
+            HTML(f'<td><input type="text" name="higherBoundry{x}" placeholder="Higehr Boundry"></td>'),
+            HTML(f'<td><input type="text" name="frequency{x}" placeholder="Frequency"></td>')]
+
+            htmls.append(row)
 
 
-    return render_template("EnterCB.html", k=int(k))
+    return render_template("EnterCB.html", k=int(k), htmls=htmls)
 
 
 @app.route("/table", methods=["post"])
@@ -97,48 +105,71 @@ def construct_table():
         except:
             data = {"Class Boundries": [], "Frequency": []}
 
-            n= sum([int(x) for x in data["Frequency"]])
-            k = int(3.322 * math.log(n, 10))
+            ##This hall section is just to get k
+            i=0
+            condition=False
+            while True:
+                try:
+                    notk = request.form[f"lowerBoundry{i}"]
+                except:
+                    condition=True
+                finally:
+                    if condition==True:
+                        k=i
+                        break
+                    else:
+                        i+=1
+            #until here
 
-            for x in range(k):
+            for i in range(k):
                 data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
                 data["Frequency"].append(request.form[f"frequency{i}"])
+
+
+            n = sum([int(x) for x in data["Frequency"]])
 
             data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
 
             acf = 0
             dcf = n
+            c= float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+
 
             #Adding data to the table
-            for x in range(k):
+            for x in range(int(k)):
                 #Class Limit
-                lower_boundry = float(data["Class Boundries"].split(" → ")[0])
-                higher_boundry = float(data["Class Boundries"].split(" → ")[1])
+                lower_boundry = float(data["Class Boundries"][x].split(" → ")[0])
+                higher_boundry = float(data["Class Boundries"][x].split(" → ")[1])
+                frequency = int(data["Frequency"][x])
 
                 data_table["Class Limit"].append("{} - {}".format(lower_boundry+0.5, higher_boundry-0.5))
 
                 #Class Boundries
-                data_table["Class Boundries"] = data["Class Boundries"]
+                data_table["Class Boundries"].append("{} → {}".format(lower_boundry, higher_boundry))
 
                 #Mid Point
                 data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
 
                 #Frequency
-                data_table["Frequency"] = data["Frequcny"]
+                data_table["Frequency"].append(frequency)
 
                 #Relative Frequency
-                rf = data_table["Frequency"][x]/n
+                rf = frequency/n
                 data_table["Relative Frequency"].append(rf)
 
                 #ACF
-                acf+=int(data_table["Frequency"][x])
+                acf+=frequency
                 data_table["ACF"].append(acf)
 
                 #DCF
                 data_table["DCF"].append(dcf)
-                dcf-=data_table["Frequency"][x]
+                dcf-=frequency
 
-                #iterative stuff
+            #turning the variable data into a list of number so that the histogram can deal with
+            data=[]
+            for x in range(k):
+                for y in range(data_table["Frequency"][x]):
+                    data.append(data_table["Class Midpoint"][x])
 
         finally:
 
@@ -148,7 +179,6 @@ def construct_table():
             df_show = df_show.append({'Class Limit' : 'TOTAL' , 'Class Boundries' : "━━━━━", "Class Midpoint": "━━",
             "Frequency": n, "Relative Frequency": 1.0, "ACF": "━", "DCF":"━"} , ignore_index=True)
             #NOW we got the table ready in a pandas data frame, we must show it in the index file
-
 
             #Central Tendency
 
@@ -172,15 +202,6 @@ def construct_table():
 
             #3 Mode
 
-            # def are_they_together(freq):
-            #     list1=[0 for x in range(k)]
-            #
-            #     n=1
-            #     for x in range(1, k):
-            #         if data_table["Frequency"][x] == if data_table["Frequency"][x+1] if data_table["Frequency"][x-1]:
-            #             list1[x] = n
-            #             n+=1
-            #if there is only 2 class or less, there's no mode
             if k < 3:
                 mode="No Mode"
             else:
@@ -290,7 +311,7 @@ def construct_table():
             plt.xticks(poly_x)
             plt.yticks(poly_y)
             plt.title("Polygon")
-            plt.xlabel("Class Mid Point")
+            plt.xlabel("Class Midpoint")
             plt.ylabel("Frequency")
 
             encoded = fig_to_base64(fig)
