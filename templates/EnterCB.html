@@ -3,20 +3,23 @@
 
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <style>
 
 td {
   margin: 50px 25px 0px 25px;
   padding-bottom: 100px;
 }
+table{
+  width: 25%;
+}
 
 </style>
 <body>
 <div class="container" align="center">
 
+<div class="container" algin="center">
+
 <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
-<div class="container">
 
 <table class="table table-striped table-dark" justify="center">
   <thead>
@@ -28,6 +31,7 @@ td {
     </tr>
     </thead>
     <tbody>
+
 {%for i in range(k)%}
 <tr>
   <th scope="row">{{i+1}}</th>
@@ -39,7 +43,6 @@ td {
 <br>
 
 </tbody>
-
 </table>
 <hr class="my-4">
 

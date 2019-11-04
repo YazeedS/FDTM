@@ -216,7 +216,7 @@ def construct_table():
             #3 Mode
 
             if k < 3:
-                mode="No Mode"
+                mode_string="No Mode"
             else:
                 possible_freq_index = []
                 for i in range(1, k-1):
@@ -224,12 +224,11 @@ def construct_table():
                         possible_freq_index.append([data_table["Frequency"][i], i])
 
                 #if there is only one possilbe frequency then there's only one mode
-                freq = possible_freq_index
                 if len(possible_freq_index) == 0:
-                    mode="No mode"
+                    mode_string="No mode"
 
                 elif len(set(data_table["Frequency"])) == 1:
-                    mode="No mode, uniform"
+                    mode_string="No mode, uniform"
 
                 #if there is 2 peakes next to each other
 
@@ -239,17 +238,20 @@ def construct_table():
 
                         frequency = possible_freq_index[x][0]
                         index = possible_freq_index[x][1]
+                        try:
+                            class_modal = df.iloc[[index]]
+                            class_frequency = data_table["Frequency"][index]
+                            d1 = class_frequency - data_table["Frequency"][index-1]
+                            d2 = class_frequency - data_table["Frequency"][index+1]
+                            class_modal_lb = float(data_table["Class Boundries"][index].split(" → ")[0])
 
-                        class_modal = df.iloc[[index]]
-                        class_frequency = data_table["Frequency"][index]
-                        d1 = class_frequency - data_table["Frequency"][index-1]
-                        d2 = class_frequency - data_table["Frequency"][index+1]
-                        class_modal_lb = float(data_table["Class Boundries"][index].split(" → ")[0])
-
-                        mode = round(((class_modal_lb + (d1/(d1+d2)) * c)), 2)
-                        modes.append(mode)
-
+                            mode = round(((class_modal_lb + (d1/(d1+d2)) * c)), 2)
+                            modes.append(mode)
+                        except:
+                            pass
                     modes=list(set(modes))
+                    if len(modes) == 0:
+                        mode_string="No mode"
 
                     mode_string=f"{len(modes)} modes, "
                     if len(modes) == 1:
@@ -260,10 +262,6 @@ def construct_table():
                         for mode in range(len(modes)-1):
                             mode_string+= str(modes[mode]) + ", "
                         mode_string+= "and " + str(modes[-1])
-                #elif len(possible_freq_index) == len(set(possible_freq_index)):
-                #else:
-                #    mode="This will be fixed"
-
 
             #Measures of dispersion and variance
 
