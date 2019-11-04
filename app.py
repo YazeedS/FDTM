@@ -30,10 +30,13 @@ def organize_cbfreq():
 
         k = request.form["k"]
         # for loop with k to get all the variables inside
-        htmls=[]
-        for x in range(int(k)):
-            row=[HTML(f'<td><input type="number" name="lowerBoundry{x}" placeholder="Lower Boundry" required></td>'),
-            HTML(f'<td><input type="number" name="higherBoundry{x}" placeholder="Higehr Boundry" required></td>'),
+        htmls=[[HTML(f'<td><input type="decimal" name="lowerBoundry{0}" placeholder="Lower Boundry" required></td>'),
+        HTML(f'<td><input type="decimal" name="higherBoundry{0}" placeholder="Higehr Boundry" required></td>'),
+        HTML(f'<td><input type="decimal" name="frequency{0}" placeholder="Frequency" required></td>')]]
+        for x in range(1, int(k)):
+
+            row=[HTML(f'<td></td>'),
+            HTML(f'<td></td>'),
             HTML(f'<td><input type="number" name="frequency{x}" placeholder="Frequency" required></td>')]
 
             htmls.append(row)
@@ -110,7 +113,7 @@ def construct_table():
             condition=False
             while True:
                 try:
-                    notk = request.form[f"lowerBoundry{i}"]
+                    notk = request.form[f"frequency{i}"]
                 except:
                     condition=True
                 finally:
@@ -121,10 +124,20 @@ def construct_table():
                         i+=1
             #until here
 
-            for i in range(k):
-                data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
-                data["Frequency"].append(request.form[f"frequency{i}"])
 
+            for i in range(k):
+                if i == 0:
+                    data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
+                    data["Frequency"].append(request.form[f"frequency{i}"])
+                else:
+                    data["Frequency"].append(request.form[f"frequency{i}"])
+
+                c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+                higher = float(data["Class Boundries"][0].split()[2])
+
+                for i in range(1, k):
+                    data["Class Boundries"].append("{} → {}".format(higher, higher+c))
+                    higher+=c
 
             n = sum([int(x) for x in data["Frequency"]])
 
@@ -132,7 +145,7 @@ def construct_table():
 
             acf = 0
             dcf = n
-            c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+
 
 
             #Adding data to the table
