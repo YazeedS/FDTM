@@ -221,10 +221,9 @@ def construct_table():
                 possible_freq_index = []
                 for i in range(1, k-1):
                     if data_table["Frequency"][i] >= data_table["Frequency"][i-1] and data_table["Frequency"][i] >= data_table["Frequency"][i+1]:
-                        possible_freq_index.append([data_table["Frequency"][i], i])
+                        possible_freq_index.append(i)
 
                 #if there is only one possilbe frequency then there's only one mode
-                freq = possible_freq_index
                 if len(possible_freq_index) == 0:
                     mode="No mode"
 
@@ -233,33 +232,17 @@ def construct_table():
 
                 #if there is 2 peakes next to each other
 
+
+
                 else:
-                    modes=[]
-                    for x in range(len(possible_freq_index)):
+                    class_modal = df.iloc[[possible_freq_index[0]]]
+                    class_frequency = data_table["Frequency"][class_index]
+                    d1 = class_frequency - data_table["Frequency"][class_index-1]
+                    d2 = class_frequency - data_table["Frequency"][class_index+1]
+                    class_modal_lb = float(data_table["Class Boundries"][class_index].split(" → ")[0])
 
-                        frequency = possible_freq_index[x][0]
-                        index = possible_freq_index[x][1]
+                    mode = round(((class_modal_lb + (d1/(d1+d2)) * c)), 2)
 
-                        class_modal = df.iloc[[index]]
-                        class_frequency = data_table["Frequency"][index]
-                        d1 = class_frequency - data_table["Frequency"][index-1]
-                        d2 = class_frequency - data_table["Frequency"][index+1]
-                        class_modal_lb = float(data_table["Class Boundries"][index].split(" → ")[0])
-
-                        mode = round(((class_modal_lb + (d1/(d1+d2)) * c)), 2)
-                        modes.append(mode)
-
-                    modes=list(set(modes))
-
-                    mode_string=f"{len(modes)} modes, "
-                    if len(modes) == 1:
-                        mode_string = f"1 mode, {modes[0]}"
-                    elif len(modes) == 2:
-                        mode_string+= str(modes[0])+ " and "+str(modes[1])
-                    else:
-                        for mode in range(len(modes)-1):
-                            mode_string+= str(modes[mode]) + ", "
-                        mode_string+= "and " + str(modes[-1])
                 #elif len(possible_freq_index) == len(set(possible_freq_index)):
                 #else:
                 #    mode="This will be fixed"
@@ -403,7 +386,7 @@ def construct_table():
 
             return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False))],
              titles=df.columns.values,
-            mean = round(mean,2) , median = round(median,2), mode=mode_string,
+            mean = round(mean,2) , median = round(median,2), mode=mode,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),
             Range = round(Range, 2), cv = round(cv, 2), histogram=HTML(histogram), polygon=HTML(polygon),
             acfp=HTML(acfp), dcfp=HTML(dcfp))
