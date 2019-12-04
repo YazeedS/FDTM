@@ -46,18 +46,35 @@ def organize_cbfreq():
 
 
 @app.route("/table", methods=["post"])
-def construct_table():
-
+def construct_table(data=""):
     if request.method == "POST":
         #if the data is raw
         try:
             data_string = request.form["data"]
-            #delete all spaces , seperate columns, delete anything that is not numbers or commas
-            data = re.findall(r"\d+", data_string)
+            # #delete all spaces , seperate columns, delete anything that is not numbers or commas
+            # #data = re.findall(r"\d+", data_string)
+            # data = re.findall(r"\d+", data_string)
+            #
+            # if len(data) == 0:
+            #     return render_template("index.html")
+            # else:
+            #     negative_data = re.findall(r"-\d+", data_string)
+            #     for number in negative_data:
+            #         data.remove(str(abs(eval(number))))
+            #         data.append(number)
+            junk = re.findall(r"\D", data_string)
+            junk = [x for x in junk if x not in ["-", "."]]
 
+            for x in range(len(junk)):
+                data_string = data_string.replace(junk[x], " ")
+            data=[]
+            data_string = data_string.split()
+            for number in data_string:
+                try:
+                    data.append(float(number))
+                except:
+                    pass
             n = len(data)
-
-            data = [float(x) for x in data]
 
             x_small = min(data)
             x_large = max(data)
@@ -185,7 +202,6 @@ def construct_table():
                     data.append(data_table["Class Midpoint"][x])
 
         finally:
-
             df_show = pd.DataFrame(data=data_table)
             df = df_show
 
@@ -391,7 +407,7 @@ def construct_table():
 
             plt.xticks(dcf_x)
 
-            plt.title("Descending Cumulative Frequency Polygon (ACFP)")
+            plt.title("Descending Cumulative Frequency Polygon (DCFP)")
             plt.xlabel("Class Boundreies")
             plt.ylabel("DCF")
 
