@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Frequency Distribution Table Maker</title>
-    <link rel="stylesheet" href="../static/css/main.css">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <script src="{{url_for('static', filename='control.js')}}"></script>
+
    </head>
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -12,7 +14,6 @@
 
    .jumbotron {
      margin: 50px 20px 0px 20px;
-     padding-bottom: 100px;
      align: center;
    }
    body{
@@ -35,12 +36,21 @@
         <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.location.href='{{ url_for('cb_freq')}}';">Class Boundries & Frequency</button>
       </div>
 
-      <hr class="my-4">
+          {% if condition %}
+          <hr class="my-4">
+
+            {{message}}
+          {% endif %}
+
+
       {% block body %}
 
 
     {% endblock %}
-    </div>
+    <hr class="my-4">
+
+    <p>.عمل الطالب/ يزيد الصليهم، إشراف/د.عبدالعزيز الباجوري، عناية عمادة السنة الأولى المشتركة</p>
+    
   </div>
   </body>
 </html>

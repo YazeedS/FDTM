@@ -2,13 +2,10 @@
 {% block body %}
 
 <body>
+  <hr class="my-4">
+
   <form action="{{url_for('construct_table')}}" method="post" enctype="multipart/form-data">
 
-    {% if condition == True %}
-      alert
-    {% endif %}
-
-    {{endif}}
 <div class="input-group">
   <div class="input-group-prepend">
     <span class="input-group-text">Raw Data</span>
@@ -20,7 +17,6 @@
 </div>
   </form>
 <br>
-<hr class="my-4">
 
 </body>
 

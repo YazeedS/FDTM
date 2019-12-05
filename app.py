@@ -30,14 +30,14 @@ def organize_cbfreq():
 
         k = request.form["k"]
         # for loop with k to get all the variables inside
-        htmls=[[HTML(f'<td><input type="decimal" name="lowerBoundry{0}" placeholder="Lower Boundry" required></td>'),
-        HTML(f'<td><input type="decimal" name="higherBoundry{0}" placeholder="Higehr Boundry" required></td>'),
-        HTML(f'<td><input type="decimal" name="frequency{0}" placeholder="Frequency" required></td>')]]
+        htmls=[[HTML(f'<td><input id="lower" type="decimal" name="lowerBoundry{0}" placeholder="Lower Boundry" required></td>'),
+        HTML(f'<td><input id="higher" type="decimal" name="higherBoundry{0}" placeholder="Higehr Boundry" required></td>'),
+        HTML(f'<td><input type="number" name="frequency{0}" placeholder="Frequency" min=1 required></td>')]]
         for x in range(1, int(k)):
 
             row=[HTML(f'<td></td>'),
             HTML(f'<td></td>'),
-            HTML(f'<td><input type="number" name="frequency{x}" placeholder="Frequency" required></td>')]
+            HTML(f'<td><input type="number" name="frequency{x}" placeholder="Frequency" min=1 required></td>')]
 
             htmls.append(row)
 
@@ -47,161 +47,191 @@ def organize_cbfreq():
 
 @app.route("/table", methods=["post"])
 def construct_table(data=""):
-    if request.method == "POST":
+    if request.method != "POST":
+        return render_template("index.html")
         #if the data is raw
-        try:
-            data_string = request.form["data"]
-            # #delete all spaces , seperate columns, delete anything that is not numbers or commas
-            # #data = re.findall(r"\d+", data_string)
-            # data = re.findall(r"\d+", data_string)
-            #
-            # if len(data) == 0:
-            #     return render_template("index.html")
-            # else:
-            #     negative_data = re.findall(r"-\d+", data_string)
-            #     for number in negative_data:
-            #         data.remove(str(abs(eval(number))))
-            #         data.append(number)
-            junk = re.findall(r"\D", data_string)
-            junk = [x for x in junk if x not in ["-", "."]]
+    try:
+        type="raw"
+        data_string = request.form["data"]
+        # #delete all spaces , seperate columns, delete anything that is not numbers or commas
+        # #data = re.findall(r"\d+", data_string)
+        # data = re.findall(r"\d+", data_string)
+        #
+        # if len(data) == 0:
+        #     return render_template("index.html")
+        # else:
+        #     negative_data = re.findall(r"-\d+", data_string)
+        #     for number in negative_data:
+        #         data.remove(str(abs(eval(number))))
+        #         data.append(number)
+        junk = re.findall(r"\D", data_string)
+        junk = [x for x in junk if x not in ["-", "."]]
 
-            for x in range(len(junk)):
-                data_string = data_string.replace(junk[x], " ")
-            data=[]
-            data_string = data_string.split()
-            for number in data_string:
-                try:
-                    data.append(float(number))
-                except:
-                    pass
-            n = len(data)
+        for x in range(len(junk)):
+            data_string = data_string.replace(junk[x], " ")
+        data=[]
+        data_string = data_string.split()
+        for number in data_string:
+            try:
+                data.append(float(number))
+            except:
+                pass
 
-            x_small = min(data)
-            x_large = max(data)
-            t_range = x_large-x_small
-            k = int(3.322 * math.log(n, 10))
-            c = math.ceil((t_range + 1) / k)
-            lower_boundry = x_small
+        n = len(data)
 
-            data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
+        x_small = min(data)
+        x_large = max(data)
+        t_range = x_large-x_small
+        k = int(3.322 * math.log(n, 10))
+        c = math.ceil((t_range + 1) / k)
+        lower_boundry = x_small
 
-            acf = 0
-            dcf = n
-            #Adding data to the table
-            for x in range(k):
-                #Class Limit
-                higher_boundry = lower_boundry+c-1
-                data_table["Class Limit"].append("{} - {}".format(lower_boundry, higher_boundry))
+        data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
 
-                #Class Boundries
-                data_table["Class Boundries"].append("{} → {}".format(lower_boundry-0.5, higher_boundry + 0.5))
+        acf = 0
+        dcf = n
+        #Adding data to the table
+        for x in range(k):
+            #Class Limit
+            higher_boundry = lower_boundry+c-1
+            data_table["Class Limit"].append("{} - {}".format(lower_boundry, higher_boundry))
 
-                #Mid Point
-                data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
+            #Class Boundries
+            data_table["Class Boundries"].append("{} → {}".format(lower_boundry-0.5, higher_boundry + 0.5))
 
-                #Frequency
-                frequency=0
-                for number in data:
-                    if number >= (lower_boundry-0.5) and number < (higher_boundry+0.5):
-                        frequency+=1
-                data_table["Frequency"].append(frequency)
+            #Mid Point
+            data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
 
-                #Relative Frequency
-                rf = frequency/n
-                data_table["Relative Frequency"].append(rf)
+            #Frequency
+            frequency=0
+            for number in data:
+                if number >= (lower_boundry-0.5) and number < (higher_boundry+0.5):
+                    frequency+=1
+            data_table["Frequency"].append(frequency)
 
-                #ACF
-                acf+=frequency
-                data_table["ACF"].append(acf)
+            #Relative Frequency
+            rf = frequency/n
+            data_table["Relative Frequency"].append(rf)
 
-                #DCF
-                data_table["DCF"].append(dcf)
-                dcf-=frequency
+            #ACF
+            acf+=frequency
+            data_table["ACF"].append(acf)
 
-                #iterative stuff
-                lower_boundry = lower_boundry + c
+            #DCF
+            data_table["DCF"].append(dcf)
+            dcf-=frequency
 
-        #if the data is cb and freq
-        except:
-            data = {"Class Boundries": [], "Frequency": []}
+            #iterative stuff
+            lower_boundry = lower_boundry + c
 
-            ##This hall section is just to get k
-            i=0
-            condition=False
-            while True:
-                try:
-                    notk = request.form[f"frequency{i}"]
-                except:
-                    condition=True
-                finally:
-                    if condition==True:
-                        k=i
-                        break
-                    else:
-                        i+=1
-            #until here
+        #Creating the string that will be displayed on top of the table.
+        numbers_string=f"The following calculations are based on {n} values: "
+        if n == 1:
+            numbers_string = f"1 value, {data[0]}"
+        elif n == 2:
+            numbers_string+= str(data[0])+ " and "+str(data[1])
+        else:
+            for number in range(n-1):
+                numbers_string+= str(data[number]) + ", "
+            numbers_string+= "and " + str(data[-1])
 
 
-            for i in range(k):
-                if i == 0:
-                    data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
-                    data["Frequency"].append(request.form[f"frequency{i}"])
+    #if the data is cb and freq
+    except:
+        type="cb_freq"
+        data = {"Class Boundries": [], "Frequency": []}
+
+        ##This hall section is just to get k
+        i=0
+        condition=False
+        while True:
+            try:
+                notk = request.form[f"frequency{i}"]
+            except:
+                condition=True
+            finally:
+                if condition==True:
+                    k=i
+                    break
                 else:
-                    data["Frequency"].append(request.form[f"frequency{i}"])
-
-                c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
-                higher = float(data["Class Boundries"][0].split()[2])
-
-                for i in range(1, k):
-                    data["Class Boundries"].append("{} → {}".format(higher, higher+c))
-                    higher+=c
-
-            n = sum([int(x) for x in data["Frequency"]])
-
-            data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
-
-            acf = 0
-            dcf = n
+                    i+=1
+        #until here
 
 
+        for i in range(k):
+            if i == 0:
+                data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
+                data["Frequency"].append(request.form[f"frequency{i}"])
+            else:
+                data["Frequency"].append(request.form[f"frequency{i}"])
 
-            #Adding data to the table
-            for x in range(int(k)):
-                #Class Limit
-                lower_boundry = float(data["Class Boundries"][x].split(" → ")[0])
-                higher_boundry = float(data["Class Boundries"][x].split(" → ")[1])
-                frequency = int(data["Frequency"][x])
+            c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+            higher = float(data["Class Boundries"][0].split()[2])
 
-                data_table["Class Limit"].append("{} - {}".format(lower_boundry+0.5, higher_boundry-0.5))
+            for i in range(1, k):
+                data["Class Boundries"].append("{} → {}".format(higher, higher+c))
+                higher+=c
 
-                #Class Boundries
-                data_table["Class Boundries"].append("{} → {}".format(lower_boundry, higher_boundry))
+        n = sum([int(x) for x in data["Frequency"]])
 
-                #Mid Point
-                data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
+        data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
 
-                #Frequency
-                data_table["Frequency"].append(frequency)
+        acf = 0
+        dcf = n
 
-                #Relative Frequency
-                rf = frequency/n
-                data_table["Relative Frequency"].append(rf)
+        #Adding data to the table
+        for x in range(int(k)):
+            #Class Limit
+            lower_boundry = float(data["Class Boundries"][x].split(" → ")[0])
+            higher_boundry = float(data["Class Boundries"][x].split(" → ")[1])
+            frequency = int(data["Frequency"][x])
 
-                #ACF
-                acf+=frequency
-                data_table["ACF"].append(acf)
+            data_table["Class Limit"].append("{} - {}".format(lower_boundry+0.5, higher_boundry-0.5))
 
-                #DCF
-                data_table["DCF"].append(dcf)
-                dcf-=frequency
+            #Class Boundries
+            data_table["Class Boundries"].append("{} → {}".format(lower_boundry, higher_boundry))
 
-            #turning the variable data into a list of number so that the histogram can deal with
-            data=[]
-            for x in range(k):
-                for y in range(data_table["Frequency"][x]):
-                    data.append(data_table["Class Midpoint"][x])
+            #Mid Point
+            data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
 
-        finally:
+            #Frequency
+            data_table["Frequency"].append(frequency)
+
+            #Relative Frequency
+            rf = frequency/n
+            data_table["Relative Frequency"].append(rf)
+
+            #ACF
+            acf+=frequency
+            data_table["ACF"].append(acf)
+
+            #DCF
+            data_table["DCF"].append(dcf)
+            dcf-=frequency
+
+        #turning the variable data into a list of number so that the histogram can deal with
+        data=[]
+        for x in range(k):
+            for y in range(data_table["Frequency"][x]):
+                data.append(data_table["Class Midpoint"][x])
+
+        #Defining numbers_string incase it's cb Frequency
+        numbers_string = ""
+        #Defining C so that it can be used in the second elif after the finally statment
+
+
+    finally:
+        #if the user enterd only one value, raw or cb_freq
+        if len(data) < 2:
+            return render_template("index.html", message=HTML('<div class="alert alert-danger" role="alert">Please enter more than one value!</div>'), condition=True)
+        #if the lower is less than higher
+        elif lower_boundry >= higher_boundry and type=="cb_freq":
+            return render_template("index.html", message=HTML('<div class="alert alert-danger" role="alert">The lower boundry has to be lower than the higher boundry!</div>'), condition=True)
+        #if the length of the class is not an integer in cb_freq
+        elif int(c) != float(c):
+            return render_template("index.html", message=HTML('<div class="alert alert-danger" role="alert">The length of the class has to be an integer!</div>'), condition=True)
+        #if it's all good
+        else:
             df_show = pd.DataFrame(data=data_table)
             df = df_show
 
@@ -416,11 +446,11 @@ def construct_table(data=""):
 
 
             return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False))],
-             titles=df.columns.values,
+             titles=df.columns.values, numbers=numbers_string,
             mean = round(mean,2) , median = round(median,2), mode=mode_string,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),
             Range = round(Range, 2), cv = round(cv, 2), histogram=HTML(histogram), polygon=HTML(polygon),
-            acfp=HTML(acfp), dcfp=HTML(dcfp))
+            acfp=HTML(acfp), dcfp=HTML(dcfp), )
 
 if __name__ == '__main__':
     app.debug=True
