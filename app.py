@@ -445,7 +445,7 @@ def construct_table(data=""):
             dcfp = '<img src="data:image/png;base64, {}" , height="400" width="400" align="center">'.format(encoded.decode('utf-8'))
 
 
-            return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False))],
+            return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False, table_id='table'))],
              titles=df.columns.values, numbers=numbers_string,
             mean = round(mean,2) , median = round(median,2), mode=mode_string,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),

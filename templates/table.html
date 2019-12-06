@@ -9,7 +9,16 @@
     font-family: 'Muli', sans-serif;
     color: black;
     text-align: left;
+
 }
+  #table, #graphs{
+    align: center;
+    width: 100%;
+    display: inline-block;
+    resize: both;
+    overflow: auto;
+}
+
 </style>
 <body>
   <hr class="my-4">
@@ -34,10 +43,11 @@
 <h3>Coeffecient of Variation: = <b>{{cv}}%</b></h3>
 <hr class="my-4">
 
-<div class="container">
-  <div class="row">
-        <div class="col-xl-6 boxy col-lg-12">{{histogram}}</div>
-        <div class="col-xl-6 boxy col-lg-12">{{polygon}}</div>
+<div class="container" id="graphs">
+    <div class="row">
+
+        <div class="col-xl-6 boxy col-md-12">{{histogram}}</div>
+        <div class="col-xl-6 boxy col-md-12">{{polygon}}</div>
       </div>
       <hr class="my-4">
 
