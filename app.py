@@ -53,17 +53,7 @@ def construct_table(data=""):
     try:
         type="raw"
         data_string = request.form["data"]
-        # #delete all spaces , seperate columns, delete anything that is not numbers or commas
-        # #data = re.findall(r"\d+", data_string)
-        # data = re.findall(r"\d+", data_string)
-        #
-        # if len(data) == 0:
-        #     return render_template("index.html")
-        # else:
-        #     negative_data = re.findall(r"-\d+", data_string)
-        #     for number in negative_data:
-        #         data.remove(str(abs(eval(number))))
-        #         data.append(number)
+
         junk = re.findall(r"\D", data_string)
         junk = [x for x in junk if x not in ["-", "."]]
 
@@ -126,9 +116,7 @@ def construct_table(data=""):
 
         #Creating the string that will be displayed on top of the table.
         numbers_string=f"The following calculations are based on {n} values: "
-        if n == 1:
-            numbers_string = f"1 value, {data[0]}"
-        elif n == 2:
+        if n == 2:
             numbers_string+= str(data[0])+ " and "+str(data[1])
         else:
             for number in range(n-1):
@@ -157,72 +145,87 @@ def construct_table(data=""):
                     i+=1
         #until here
 
+        #Trying to find if the inputted boundries are valid
 
-        for i in range(k):
-            if i == 0:
-                data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
-                data["Frequency"].append(request.form[f"frequency{i}"])
-            else:
-                data["Frequency"].append(request.form[f"frequency{i}"])
+        try:
+            float(request.form["lowerBoundry0"])
+            float(request.form["higherBoundry0"])
+            type="cb_freq"
+        except ValueError:
+            type="cb_freq_invalid"
 
-            c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
-            higher = float(data["Class Boundries"][0].split()[2])
+        except:
+            #Because there's is a conflict with the case of 1 value in raw data and invalid class boundry
+            data=[1]
+        if type=="cb_freq":
+            for i in range(k):
+                if i == 0:
+                    data["Class Boundries"].append("{} → {}".format(request.form[f"lowerBoundry{i}"], request.form[f"higherBoundry{i}"]))
+                    data["Frequency"].append(request.form[f"frequency{i}"])
+                else:
+                    data["Frequency"].append(request.form[f"frequency{i}"])
 
-            for i in range(1, k):
-                data["Class Boundries"].append("{} → {}".format(higher, higher+c))
-                higher+=c
+                c = float(data["Class Boundries"][0].split()[2]) - float(data["Class Boundries"][0].split()[0])
+                higher = float(data["Class Boundries"][0].split()[2])
 
-        n = sum([int(x) for x in data["Frequency"]])
+                for i in range(1, k):
+                    data["Class Boundries"].append("{} → {}".format(higher, higher+c))
+                    higher+=c
 
-        data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
+            n = sum([int(x) for x in data["Frequency"]])
 
-        acf = 0
-        dcf = n
+            data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
 
-        #Adding data to the table
-        for x in range(int(k)):
-            #Class Limit
-            lower_boundry = float(data["Class Boundries"][x].split(" → ")[0])
-            higher_boundry = float(data["Class Boundries"][x].split(" → ")[1])
-            frequency = int(data["Frequency"][x])
+            acf = 0
+            dcf = n
 
-            data_table["Class Limit"].append("{} - {}".format(lower_boundry+0.5, higher_boundry-0.5))
+            #Adding data to the table
+            for x in range(int(k)):
+                #Class Limit
+                lower_boundry = float(data["Class Boundries"][x].split(" → ")[0])
+                higher_boundry = float(data["Class Boundries"][x].split(" → ")[1])
+                frequency = int(data["Frequency"][x])
 
-            #Class Boundries
-            data_table["Class Boundries"].append("{} → {}".format(lower_boundry, higher_boundry))
+                data_table["Class Limit"].append("{} - {}".format(lower_boundry+0.5, higher_boundry-0.5))
 
-            #Mid Point
-            data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
+                #Class Boundries
+                data_table["Class Boundries"].append("{} → {}".format(lower_boundry, higher_boundry))
 
-            #Frequency
-            data_table["Frequency"].append(frequency)
+                #Mid Point
+                data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
 
-            #Relative Frequency
-            rf = frequency/n
-            data_table["Relative Frequency"].append(rf)
+                #Frequency
+                data_table["Frequency"].append(frequency)
 
-            #ACF
-            acf+=frequency
-            data_table["ACF"].append(acf)
+                #Relative Frequency
+                rf = frequency/n
+                data_table["Relative Frequency"].append(rf)
 
-            #DCF
-            data_table["DCF"].append(dcf)
-            dcf-=frequency
+                #ACF
+                acf+=frequency
+                data_table["ACF"].append(acf)
 
-        #turning the variable data into a list of number so that the histogram can deal with
-        data=[]
-        for x in range(k):
-            for y in range(data_table["Frequency"][x]):
-                data.append(data_table["Class Midpoint"][x])
+                #DCF
+                data_table["DCF"].append(dcf)
+                dcf-=frequency
 
-        #Defining numbers_string incase it's cb Frequency
-        numbers_string = ""
-        #Defining C so that it can be used in the second elif after the finally statment
+            #turning the variable data into a list of number so that the histogram can deal with
+            data=[]
+            for x in range(k):
+                for y in range(data_table["Frequency"][x]):
+                    data.append(data_table["Class Midpoint"][x])
+
+            #Defining numbers_string incase it's cb Frequency
+            numbers_string = ""
+            #Defining C so that it can be used in the second elif after the finally statment
 
 
     finally:
+        #if the class Boundries are invalid
+        if type=="cb_freq_invalid":
+            return render_template("index.html", message=HTML('<div class="alert alert-danger" role="alert">Please enter valid class boundries!</div>'), condition=True)
         #if the user enterd only one value, raw or cb_freq
-        if len(data) < 2:
+        elif len(data) < 2:
             return render_template("index.html", message=HTML('<div class="alert alert-danger" role="alert">Please enter more than one value!</div>'), condition=True)
         #if the lower is less than higher
         elif lower_boundry >= higher_boundry and type=="cb_freq":
