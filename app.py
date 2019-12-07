@@ -30,8 +30,8 @@ def organize_cbfreq():
 
         k = request.form["k"]
         # for loop with k to get all the variables inside
-        htmls=[[HTML(f'<td><input id="lower" type="decimal" name="lowerBoundry{0}" placeholder="Lower Boundry" required></td>'),
-        HTML(f'<td><input id="higher" type="decimal" name="higherBoundry{0}" placeholder="Higehr Boundry" required></td>'),
+        htmls=[[HTML(f'<td><input id="lower" type="text" name="lowerBoundry{0}" placeholder="Lower Boundry" required></td>'),
+        HTML(f'<td><input id="higher" type="text" name="higherBoundry{0}" placeholder="Higehr Boundry" required></td>'),
         HTML(f'<td><input type="number" name="frequency{0}" placeholder="Frequency" min=1 required></td>')]]
         for x in range(1, int(k)):
 

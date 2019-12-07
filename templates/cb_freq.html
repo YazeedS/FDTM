@@ -6,7 +6,7 @@
   <form action="{{url_for('organize_cbfreq')}}" method="post" enctype="multipart/form-data">
 
   <label for="k">How Many Classes(k)?</label>
-  <input type="number" name="k" value="k" min="1" required>
+  <input type="number" name="k" value="k" min="1" max="1000" required>
 
   <button type="submit" class="btn btn-primary">Next</button>
 </form>

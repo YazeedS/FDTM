@@ -11,16 +11,25 @@
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
    <style>
+
    .jumbotron {
-     margin: 50px 20px 0px 20px;
+     margin: 25px 0px 10px 0px;
      align: center;
+     width: 100%;
    }
 
-
+   #table {
+     align: center;
+     width: 100%;
+     display: inline-block;
+   }
    body{
      background-image: url('https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg');
      background-repeat: repeat-y;
    }
+  th{
+       width: 25%;
+  }
    </style>
 
   <body>
@@ -38,9 +47,8 @@
       </div>
 
           {% if condition %}
-          <hr class="my-4">
-
-            {{message}}
+            <hr class="my-4">
+              {{message}}
           {% endif %}
 
 
