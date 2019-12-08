@@ -304,13 +304,13 @@ def construct_table(data=""):
 
                     mode_string=f"{len(modes)} modes, "
                     if len(modes) == 1:
-                        mode_string = f"1 mode, {modes[0]}"
+                        mode_string = f"1 mode, {modes[0]}, unimodal."
                     elif len(modes) == 2:
-                        mode_string+= str(modes[0])+ " and "+str(modes[1])
+                        mode_string+= str(modes[0])+ " and "+str(modes[1]+ ", bimodal.")
                     else:
                         for mode in range(len(modes)-1):
                             mode_string+= str(modes[mode]) + ", "
-                        mode_string+= "and " + str(modes[-1])
+                        mode_string+= "and " + str(modes[-1] + ", multimodal.")
 
             #Measures of dispersion and variance
 
