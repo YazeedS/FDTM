@@ -386,7 +386,6 @@ def construct_table(data=""):
             plt.scatter(poly_x[k+1], 0, color="b", facecolors='none', s=100)
             #syle
             plt.xticks(poly_x)
-            plt.yticks(poly_y)
             plt.title("Polygon")
             plt.xlabel("Class Midpoint")
             plt.ylabel("Frequency")
