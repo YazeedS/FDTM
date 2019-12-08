@@ -306,7 +306,7 @@ def construct_table(data=""):
                     if len(modes) == 1:
                         mode_string = f"1 mode, {modes[0]}, unimodal."
                     elif len(modes) == 2:
-                        mode_string+= str(modes[0])+ " and "+str(modes[1]+ ", bimodal.")
+                        mode_string+= f"{modes[0]} and {modes[1]}, bimodal."
                     else:
                         for mode in range(len(modes)-1):
                             mode_string+= str(modes[mode]) + ", "
