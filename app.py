@@ -310,7 +310,7 @@ def construct_table(data=""):
                     else:
                         for mode in range(len(modes)-1):
                             mode_string+= str(modes[mode]) + ", "
-                        mode_string+= "and " + str(modes[-1] + ", multimodal.")
+                        mode_string+= f"and {modes[-1]}, multimodal."
 
             #Measures of dispersion and variance
 
