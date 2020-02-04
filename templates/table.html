@@ -23,13 +23,11 @@ th {
 }
 </style>
 <body>
-  <hr class="my-4">
 
     <h5>{{numbers}}</h5>
   {% for table in tables %}
             {{ table|safe }}
 {% endfor %}
-<hr class="my-4">
 
 <h3>Mean: = <b>{{mean}}</b></h3>
 

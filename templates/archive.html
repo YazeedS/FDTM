@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block body %}
+
+<body>
+  <h1 class="display-4">Choose an exercise</h1>
+
+  <hr class="my-4">
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-outline-primary btn-lg" name="25" onclick="window.location.href='{{ url_for('q25')}}';">Ch1 25</button>
+    <button type="button" class="btn btn-outline-primary btn-lg" name="26" onclick="window.location.href='{{ url_for('q26')}}';">Ch1 26</button>
+    <button type="button" class="btn btn-outline-primary btn-lg" name="27" onclick="window.location.href='{{ url_for('q27')}}';">Ch1 27</button>
+  </div>
+</body>
+
+{% endblock %}

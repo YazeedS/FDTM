@@ -11,9 +11,10 @@
    <style>
 
    .jumbotron {
-     margin: 25px 0px 10px 0px;
+     margin: 0px 0px 10px 0px;
      align: center;
      width: 100%;
+     padding-top: 20px;
    }
 
    #table {
@@ -28,22 +29,28 @@
   th{
        width: 25%;
   }
-
    </style>
 
   <body>
+
     <div class="container" align="center">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+          <a class="navbar-brand" href="#">FDTM</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link nav-link active" href="{{ url_for('home')}}">Home <span class="sr-only">(current)</span></a>
+            <a class="nav-item nav-link active" href="{{ url_for('practice')}}">Practice</a>
+            <a class="nav-item nav-link active" href="{{ url_for('upload')}}">Upload</a>
+            <a class="nav-item nav-link active" href="{{ url_for('archive')}}">Archive</a>
 
+          </div>
+        </div>
+    </nav>
     <div class="jumbotron">
-      <h1 class="display-4">Frequency Distribution Table Maker</h1>
-      <hr class="my-4">
 
-      <p class="lead">Choose a way to upload your data.</p>
-
-      <div class="btn-group" role="group" aria-label="Basic example">
-        <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.location.href='{{ url_for('raw_data')}}';">Raw Data</button>
-        <button type="button" class="btn btn-outline-primary btn-lg" onclick="window.location.href='{{ url_for('cb_freq')}}';">Class Boundries & Frequency</button>
-      </div>
 
           {% if condition %}
             <hr class="my-4">

@@ -12,9 +12,17 @@ import base64
 
 app=Flask(__name__)
 
-@app.route("/")
+@app.route("/index")
 def index():
     return render_template("index.html")
+
+@app.route("/")
+def home():
+    return render_template("home.html")
+
+@app.route("/upload")
+def upload():
+    return render_template("upload.html")
 
 @app.route("/raw")
 def raw_data():
@@ -46,82 +54,84 @@ def organize_cbfreq():
 
 
 @app.route("/table", methods=["post"])
-def construct_table(data=""):
-    if request.method != "POST":
-        return render_template("index.html")
+def construct_table(data=[], ques=0):
+
         #if the data is raw
     try:
-        type="raw"
-        data_string = request.form["data"]
+        try:
+            type="raw"
+            data_string = request.form["data"]
 
-        junk = re.findall(r"\D", data_string)
-        junk = [x for x in junk if x not in ["-", "."]]
+            junk = re.findall(r"\D", data_string)
+            junk = [x for x in junk if x not in ["-", "."]]
 
-        for x in range(len(junk)):
-            data_string = data_string.replace(junk[x], " ")
-        data=[]
-        data_string = data_string.split()
-        for number in data_string:
-            try:
-                data.append(float(number))
-            except:
-                pass
+            for x in range(len(junk)):
+                data_string = data_string.replace(junk[x], " ")
+            data=[]
+            data_string = data_string.split()
+            for number in data_string:
+                try:
+                    data.append(float(number))
+                except:
+                    pass
+        except:
+             data = data
+        finally:
+            n = len(data)
 
-        n = len(data)
+            x_small = min(data)
+            x_large = max(data)
+            t_range = x_large-x_small
+            k = int(3.322 * math.log(n, 10))
+            c = math.ceil((t_range + 1) / k)
+            lower_boundry = x_small
 
-        x_small = min(data)
-        x_large = max(data)
-        t_range = x_large-x_small
-        k = int(3.322 * math.log(n, 10))
-        c = math.ceil((t_range + 1) / k)
-        lower_boundry = x_small
+            data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
 
-        data_table = {"Class Limit": [], "Class Boundries": [], "Class Midpoint": [], "Frequency": [],"Relative Frequency": [], "ACF":[] , "DCF": []}
+            acf = 0
+            dcf = n
+            #Adding data to the table
+            for x in range(k):
+                #Class Limit
+                higher_boundry = lower_boundry+c-1
+                data_table["Class Limit"].append("{} - {}".format(lower_boundry, higher_boundry))
 
-        acf = 0
-        dcf = n
-        #Adding data to the table
-        for x in range(k):
-            #Class Limit
-            higher_boundry = lower_boundry+c-1
-            data_table["Class Limit"].append("{} - {}".format(lower_boundry, higher_boundry))
+                #Class Boundries
+                data_table["Class Boundries"].append("{} → {}".format(lower_boundry-0.5, higher_boundry + 0.5))
 
-            #Class Boundries
-            data_table["Class Boundries"].append("{} → {}".format(lower_boundry-0.5, higher_boundry + 0.5))
+                #Mid Point
+                data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
 
-            #Mid Point
-            data_table["Class Midpoint"].append((lower_boundry+higher_boundry)/2)
+                #Frequency
+                frequency=0
+                for number in data:
+                    if number >= (lower_boundry-0.5) and number < (higher_boundry+0.5):
+                        frequency+=1
+                data_table["Frequency"].append(frequency)
 
-            #Frequency
-            frequency=0
-            for number in data:
-                if number >= (lower_boundry-0.5) and number < (higher_boundry+0.5):
-                    frequency+=1
-            data_table["Frequency"].append(frequency)
+                #Relative Frequency
+                rf = frequency/n
+                data_table["Relative Frequency"].append(rf)
 
-            #Relative Frequency
-            rf = frequency/n
-            data_table["Relative Frequency"].append(rf)
+                #ACF
+                acf+=frequency
+                data_table["ACF"].append(acf)
 
-            #ACF
-            acf+=frequency
-            data_table["ACF"].append(acf)
+                #DCF
+                data_table["DCF"].append(dcf)
+                dcf-=frequency
 
-            #DCF
-            data_table["DCF"].append(dcf)
-            dcf-=frequency
+                #iterative stuff
+                lower_boundry = lower_boundry + c
 
-            #iterative stuff
-            lower_boundry = lower_boundry + c
-
-        #Creating the string that will be displayed on top of the table.
-        numbers_string=f"The following calculations are based on {n} values: "
-        if n == 2:
-            numbers_string+= str(data[0])+ " and "+str(data[1])
-        else:
-            for number in range(n-1):
-                numbers_string+= str(data[number]) + ", "
-            numbers_string+= "and " + str(data[-1])
+            #Creating the string that will be displayed on top of the table.
+            numbers_string=f"The following calculations are based on {n} values: "
+            if n == 2:
+                numbers_string+= str(data[0])+ " and "+str(data[1])
+            else:
+                for number in range(n-1):
+                    numbers_string+= str(data[number]) + ", "
+                numbers_string+= "and " + str(data[-1])
 
 
     #if the data is cb and freq
@@ -446,6 +456,11 @@ def construct_table(data=""):
             encoded = fig_to_base64(fig)
             dcfp = '<img src="data:image/png;base64, {}" , height="400" width="400" align="center">'.format(encoded.decode('utf-8'))
 
+            #if the data is from a special case in the archive, it would redirict to a special page
+            if ques==0:
+                html_file = 'table.html'
+            else:
+                numbers_string=f"Chapter 1 Exercise {ques}."
 
             return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False, table_id='table'))],
              titles=df.columns.values, numbers=numbers_string,
@@ -454,6 +469,42 @@ def construct_table(data=""):
             Range = round(Range, 2), cv = round(cv, 2), histogram=HTML(histogram), polygon=HTML(polygon),
             acfp=HTML(acfp), dcfp=HTML(dcfp), )
 
+@app.route("/Archive/")
+def archive():
+    return render_template("archive.html")
+
+@app.route("/Archive/Q25")
+def q25():
+    data = [3, 4, 4, 4, 4,
+        7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+        10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10,
+        13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+        16, 16, 16, 16, 16, 16, 16, 16, 16, 17]
+
+    return construct_table(data, 25)
+@app.route("/Archive/Q26")
+def q26():
+    data = [1, 3, 3, 3, 3, 3, 3,
+     8, 8, 8, 8, 8, 8, 8, 8, 8,
+     13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13,
+     18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18,
+     23, 23, 23, 23, 23, 23, 23, 25]
+
+    return construct_table(data, 26)
+
+@app.route("/Archive/Q27")
+def q27():
+    data = [5.5, 7.5, 7.5, 7.5, 7.5,
+    12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5, 12.5,
+    17.5, 17.5, 17.5, 17.5, 17.5,
+    22.5, 22.5, 22.5, 22.5, 22.5, 22.5, 22.5, 22.5, 22.5, 22.5,
+    27.5, 27.5, 27.5, 27.5, 29.5]
+
+    return construct_table(data, 27)
+
+@app.route("/Practice")
+def practice():
+    return render_template("Practice.html")
 if __name__ == '__main__':
     app.debug=True
     app.run()
