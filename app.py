@@ -461,7 +461,7 @@ def construct_table(data=[], ques=""):
             html_file = "table.html"
             if ques=="":
                 pass
-            elif ques in ["25", "26", "27"]:
+            elif ques in [25, 26, 27]:
                 numbers_string=f"Chapter 1 Exercise {int(ques)}."
             else:
                 html_file = "practice.html"
