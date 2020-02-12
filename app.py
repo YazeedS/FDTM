@@ -510,7 +510,7 @@ def q27():
 
 @app.route("/PracticePage")
 def practicePage():
-    return render_template("PracticePage.html")
+    return render_template("practicePage.html")
 
 @app.route("/Practice/")
 def practicing():
