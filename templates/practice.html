@@ -59,6 +59,11 @@ th {
 </div>
 </div>
 
+<hr class="my-4">
+{% for table in tables %}
+          {{ table|safe }}
+{% endfor %}
+
 </body>
 
 {% endblock %}
