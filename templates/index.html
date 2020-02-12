@@ -27,6 +27,7 @@
    body{
      background-image: url('https://serving.photos.photobox.com/37044883d97e4eeeb22eda5a9eb9c7cea591381d6e2ecc9c2c3a65d7b31204dfb1425fa3.jpg');
      background-repeat: repeat-y;
+
    }
   th{
        width: 25%;
@@ -44,7 +45,7 @@
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
             <a class="nav-link nav-link active" href="{{ url_for('home')}}">Home <span class="sr-only">(current)</span></a>
-            <a class="nav-item nav-link active" >Practice</a>  <!--href="{{ url_for('practice')}}"-->
+            <a class="nav-item nav-link active" href="{{ url_for('practicePage')}}">Practice</a>  <!---->
             <a class="nav-item nav-link active" href="{{ url_for('upload')}}">Upload</a>
             <a class="nav-item nav-link active" href="{{ url_for('archive')}}">Archive</a>
           </div>

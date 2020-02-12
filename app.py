@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 from PIL import Image
 import io
 import base64
+from random import randint
 
 
 
@@ -54,7 +55,7 @@ def organize_cbfreq():
 
 
 @app.route("/table", methods=["post"])
-def construct_table(data=[], ques=0):
+def construct_table(data=[], ques=""):
 
         #if the data is raw
     try:
@@ -457,17 +458,22 @@ def construct_table(data=[], ques=0):
             dcfp = '<img src="data:image/png;base64, {}" , height="400" width="400" align="center">'.format(encoded.decode('utf-8'))
 
             #if the data is from a special case in the archive, it would redirict to a special page
-            if ques==0:
-                html_file = 'table.html'
+            html_file = "table.html"
+            if ques=="":
+                pass
+            elif ques in ["25", "26", "27"]:
+                numbers_string=f"Chapter 1 Exercise {int(ques)}."
             else:
-                numbers_string=f"Chapter 1 Exercise {ques}."
+                html_file = "practice.html"
 
-            return render_template('table.html',  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False, table_id='table'))],
+            possible_question_head = [histogram, polygon, acfp, dcfp]
+            ques = 0
+            return render_template(html_file,  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False, table_id='table'))],
              titles=df.columns.values, numbers=numbers_string,
             mean = round(mean,2) , median = round(median,2), mode=mode_string,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),
             Range = round(Range, 2), cv = round(cv, 2), histogram=HTML(histogram), polygon=HTML(polygon),
-            acfp=HTML(acfp), dcfp=HTML(dcfp), )
+            acfp=HTML(acfp), dcfp=HTML(dcfp), head = HTML(possible_question_head[int(ques)]))
 
 @app.route("/Archive/")
 def archive():
@@ -502,9 +508,20 @@ def q27():
 
     return construct_table(data, 27)
 
-@app.route("/Practice")
-def practice():
-    return render_template("Practice.html")
+@app.route("/PracticePage")
+def practicePage():
+    return render_template("PracticePage.html")
+
+@app.route("/Practice/")
+def practicing():
+    data = []
+    for x in range(50):
+        data.append(randint(1, 40))
+
+    temp = randint(1, 3)
+
+    return construct_table(data, temp)
+
 if __name__ == '__main__':
     app.debug=True
     app.run()
