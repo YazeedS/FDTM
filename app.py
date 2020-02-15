@@ -467,13 +467,14 @@ def construct_table(data=[], ques=""):
                 html_file = "practice.html"
 
             possible_question_head = [histogram, polygon, acfp, dcfp]
-            ques = 0
+            choosen = possible_question_head[randint(0,3)]
+
             return render_template(html_file,  tables=[HTML(df_show.to_html(classes='table table-striped table-dark', justify='center',index=False, table_id='table'))],
              titles=df.columns.values, numbers=numbers_string,
             mean = round(mean,2) , median = round(median,2), mode=mode_string,
             variance= round(variance,2), standerd_deviation=round(standerd_deviation, 2),
             Range = round(Range, 2), cv = round(cv, 2), histogram=HTML(histogram), polygon=HTML(polygon),
-            acfp=HTML(acfp), dcfp=HTML(dcfp), head = HTML(possible_question_head[int(ques)]))
+            acfp=HTML(acfp), dcfp=HTML(dcfp), head = HTML(choosen))
 
 @app.route("/Archive/")
 def archive():
@@ -518,7 +519,7 @@ def practicing():
     for x in range(50):
         data.append(randint(1, 40))
 
-    temp = randint(1, 3)
+    temp = "practice"
 
     return construct_table(data, temp)
 
